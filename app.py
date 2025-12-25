@@ -54,19 +54,45 @@ transform = transforms.Compose([
 ])
 
 # --- Frame Sampling Functions ---
-def sample_frames(frames, strategy):
-    total = len(frames)
-    if total == 0:
+def get_frame_indices(total_frames, strategy):
+    if total_frames == 0:
         return []
-    if total < 10:
-        return frames
+    if total_frames < 10:
+        return list(range(total_frames))
+    
     if strategy == "strategy_1":
-        idxs = np.linspace(0, total - 1, 10, dtype=int)
+        return np.linspace(0, total_frames - 1, 10, dtype=int)
     elif strategy == "strategy_2":
-        idxs = np.arange(0, total, total // 10)[:10]
+        return np.arange(0, total_frames, total_frames // 10)[:10]
     elif strategy == "strategy_3":
-        idxs = np.random.choice(range(total), 10, replace=False)
-    return [frames[i] for i in idxs]
+        return np.random.choice(range(total_frames), 10, replace=False)
+    return []
+
+# --- Efficient Frame Extraction ---
+def extract_specific_frames(video_path, indices):
+    cap = cv2.VideoCapture(video_path)
+    frames = []
+    indices = set(indices) # Optimize lookup
+    
+    current_frame = 0
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        if current_frame in indices:
+            # Convert BGR (OpenCV) to RGB
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frames.append(frame_rgb)
+            
+        current_frame += 1
+        
+        # Stop if we went past the max index needed (optimization)
+        if current_frame > max(indices, default=0):
+            break
+            
+    cap.release()
+    return frames
 
 # --- Face Detection ---
 def detect_faces(frames):
@@ -109,25 +135,34 @@ if uploaded_video:
     with st.spinner("Processing video..."):
         results = {}
 
-        # Read all frames
-        try:
-            all_frames = list(iio.imread(video_path, plugin="pyav"))
-        except Exception as e:
-            st.error(f"Failed to read video: {e}")
-            st.stop()
+        # Get Total Frame Count
+        cap = cv2.VideoCapture(video_path)
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        cap.release()
+
+        if total_frames == 0:
+             st.error("Could not read video frames.")
+             st.stop()
 
         for strategy_name, model in strategy_models.items():
-            frames = sample_frames(all_frames, strategy_name)
+            # 1. Determine which frame indices to read
+            indices = get_frame_indices(total_frames, strategy_name)
+            
+            # 2. Read ONLY those frames
+            frames = extract_specific_frames(video_path, indices)
+            
+            # 3. Detect Faces
             faces = detect_faces(frames)
 
             if not faces:
-                st.error(f"No faces detected for {strategy_name}. Skipping...")
+                st.warning(f"No faces detected for {strategy_name}. Skipping...")
                 continue
-
+            
+            # 4. Extract Features
             features = extract_features(faces)
 
             if features is None:
-                st.error(f"Feature extraction failed for {strategy_name}. Skipping...")
+                st.warning(f"Feature extraction failed for {strategy_name}. Skipping...")
                 continue
 
             input_tensor = torch.tensor(features, dtype=torch.float32).unsqueeze(0).to(device)
