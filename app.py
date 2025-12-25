@@ -102,18 +102,19 @@ st.markdown("""
     
     /* Video Player Container */
     .video-container {
-        border-radius: 16px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        margin: 30px 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        margin: 20px auto;
+        max-width: 400px; /* Limit max width for compactness */
     }
     
     /* Result Cards */
     .result-card {
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(16px);
-        border-radius: 20px;
-        padding: 40px;
+        border-radius: 16px;
+        padding: 30px;
         border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -121,8 +122,8 @@ st.markdown("""
     }
     
     .result-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
         border-color: rgba(255, 255, 255, 0.2);
     }
     
@@ -130,7 +131,7 @@ st.markdown("""
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(20px);
         }
         to {
             opacity: 1;
@@ -141,9 +142,9 @@ st.markdown("""
     /* Final Result Card */
     .final-result-card {
         text-align: center;
-        padding: 80px 40px;
-        border-radius: 24px;
-        margin-bottom: 40px;
+        padding: 40px 20px;
+        border-radius: 20px;
+        margin-bottom: 30px;
         position: relative;
         overflow: hidden;
         animation: fadeInUp 0.8s ease-out forwards;
@@ -166,19 +167,19 @@ st.markdown("""
     }
     
     .result-text {
-        font-size: 64px;
+        font-size: 42px; /* Smaller font for mobile */
         font-weight: 900;
         margin: 0;
         text-transform: uppercase;
-        letter-spacing: 4px;
+        letter-spacing: 2px;
         position: relative;
         z-index: 1;
         text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
     
     .result-subtitle {
-        font-size: 20px;
-        margin-top: 20px;
+        font-size: 16px;
+        margin-top: 10px;
         opacity: 0.9;
         position: relative;
         z-index: 1;
@@ -189,16 +190,16 @@ st.markdown("""
     .model-card {
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(12px);
-        border-radius: 16px;
-        padding: 28px;
-        margin-bottom: 20px;
+        border-radius: 12px;
+        padding: 20px; /* Reduced padding */
+        margin-bottom: 15px;
         border: 1px solid rgba(255, 255, 255, 0.1);
         transition: all 0.3s ease;
         animation: fadeInUp 0.6s ease-out forwards;
     }
     
     .model-card:hover {
-        transform: translateX(8px);
+        transform: translateX(4px);
         border-color: rgba(255, 255, 255, 0.2);
     }
     
@@ -206,38 +207,38 @@ st.markdown("""
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
     }
     
     .model-name {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
-        color: white;
+        color: rgba(255, 255, 255, 0.95); /* Improved visibility */
         margin: 0;
     }
     
     .prediction-badge {
-        padding: 8px 20px;
-        border-radius: 20px;
-        font-size: 14px;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
     }
     
     /* Confidence Meter */
     .confidence-meter {
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        height: 28px;
+        border-radius: 8px;
+        height: 12px; /* Thinner bar */
         overflow: hidden;
         position: relative;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
     
     .confidence-fill {
         height: 100%;
-        border-radius: 12px;
+        border-radius: 8px;
         transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
@@ -261,126 +262,113 @@ st.markdown("""
     
     .confidence-fill.authentic {
         background: linear-gradient(90deg, #10b981, #14b8a6);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
     }
     
     .confidence-fill.synthetic {
         background: linear-gradient(90deg, #ef4444, #f43f5e);
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
     }
     
     .confidence-text {
-        margin-top: 8px;
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 14px;
+        margin-top: 4px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 12px;
         font-weight: 500;
+        text-align: right; /* Right align for cleaner look */
     }
     
     /* Processing Section */
     .processing-container {
         background: rgba(255, 255, 255, 0.03);
         backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 40px;
+        border-radius: 16px;
+        padding: 24px;
         border: 1px solid rgba(99, 102, 241, 0.2);
-        margin: 30px 0;
+        margin: 20px 0;
     }
     
     .processing-title {
         color: white;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: 700;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         text-align: center;
     }
     
     .stage-container {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
     
     .stage-header {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
     
     .stage-name {
         color: white;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 500;
     }
     
     .stage-progress {
         color: rgba(255, 255, 255, 0.7);
-        font-size: 14px;
+        font-size: 13px;
     }
     
     .progress-bar-container {
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+        border-radius: 8px;
         overflow: hidden;
-        height: 8px;
+        height: 6px;
     }
     
     .progress-bar {
         background: linear-gradient(90deg, #6366f1, #a855f7);
         height: 100%;
         transition: width 0.5s ease;
-        box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
     }
     
     /* Section Headers */
     .section-header {
-        color: white;
-        font-size: 28px;
+        color: rgba(255, 255, 255, 0.9); /* Increased opacity */
+        font-size: 24px;
         font-weight: 700;
-        margin: 40px 0 24px 0;
+        margin: 30px 0 20px 0;
         text-align: center;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Drop shadow for contrast */
     }
     
     /* Divider */
     .divider {
         height: 1px;
         background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        margin: 40px 0;
+        margin: 30px 0;
     }
     
     /* Info Box */
     .info-box {
         background: rgba(59, 130, 246, 0.1);
-        border-left: 4px solid #3b82f6;
-        padding: 20px;
+        border-left: 3px solid #3b82f6;
+        padding: 16px;
         border-radius: 8px;
-        margin: 20px 0;
+        margin: 16px 0;
     }
     
     .info-text {
         color: rgba(255, 255, 255, 0.9);
-        font-size: 15px;
+        font-size: 14px;
         margin: 0;
     }
-    
-    /* Button Styling */
-    .stButton > button {
-        background: linear-gradient(135deg, #6366f1, #a855f7);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 12px 32px;
-        font-size: 16px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.5);
-    }
-    
-    /* Spinner Customization */
-    .stSpinner > div {
-        border-top-color: #6366f1 !important;
+
+    /* Mobile Responsiveness */
+    @media (max-width: 600px) {
+        .hero-title { font-size: 36px; }
+        .hero-subtitle { font-size: 16px; }
+        .result-text { font-size: 32px; }
+        .upload-container { padding: 20px; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -507,10 +495,16 @@ if uploaded_video:
         tmp_file.write(uploaded_video.read())
         video_path = tmp_file.name
 
-    # Display Video
-    st.markdown("<div class='video-container'>", unsafe_allow_html=True)
+    # Display Video (Resized to be small/compact)
+    st.markdown("""
+    <div style='display: flex; justify-content: center;'>
+        <div class='video-container'>
+    """, unsafe_allow_html=True)
     st.video(uploaded_video)
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("""
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     # Info Box
     st.markdown("""
@@ -630,6 +624,13 @@ if uploaded_video:
         st.markdown("<h3 class='section-header'>Individual Model Results</h3>", unsafe_allow_html=True)
 
         # Display each model result
+        # Map strategy names to neat display names
+        strategy_map = {
+            "strategy_1": "Model 1",
+            "strategy_2": "Model 2",
+            "strategy_3": "Model 3"
+        }
+
         for idx, (strategy_name, (pred, conf)) in enumerate(results.items()):
             # Determine styling
             if pred == "REAL":
@@ -641,8 +642,8 @@ if uploaded_video:
                 badge_color = "background: linear-gradient(135deg, #ef4444, #f43f5e); color: #fef2f2;"
                 label = "SYNTHETIC"
             
-            # Format strategy name
-            display_name = strategy_name.replace('_', ' ').title()
+            # Format strategy name using the map, default to original if not found
+            display_name = strategy_map.get(strategy_name, strategy_name.replace('_', ' ').title())
             
             # Animation delay for staggered effect
             delay = idx * 0.15
