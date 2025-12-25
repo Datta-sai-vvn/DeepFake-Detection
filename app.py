@@ -92,8 +92,8 @@ def extract_features(faces):
     return features.mean(dim=0).cpu().numpy()
 
 # --- Streamlit Frontend ---
-st.set_page_config(page_title="DeepFake Detection", page_icon="🎥", layout="centered")
-st.title("🎥 DeepFake Detection Ensemble App (Live Extraction)")
+st.set_page_config(page_title="DeepFake Detection", layout="centered")
+st.title("DeepFake Detection Ensemble App (Live Extraction)")
 
 uploaded_video = st.file_uploader("Upload a Video", type=["mp4", "avi"])
 
@@ -104,7 +104,7 @@ if uploaded_video:
 
     st.video(uploaded_video)
 
-    st.info(f"🔍 Extracting frames and features...")
+    st.info(f"Extracting frames and features...")
 
     with st.spinner("Processing video..."):
         results = {}
@@ -113,7 +113,7 @@ if uploaded_video:
         try:
             all_frames = list(iio.imread(video_path, plugin="pyav"))
         except Exception as e:
-            st.error(f"🚫 Failed to read video: {e}")
+            st.error(f"Failed to read video: {e}")
             st.stop()
 
         for strategy_name, model in strategy_models.items():
@@ -121,13 +121,13 @@ if uploaded_video:
             faces = detect_faces(frames)
 
             if not faces:
-                st.error(f"❗ No faces detected for {strategy_name}. Skipping...")
+                st.error(f"No faces detected for {strategy_name}. Skipping...")
                 continue
 
             features = extract_features(faces)
 
             if features is None:
-                st.error(f"❗ Feature extraction failed for {strategy_name}. Skipping...")
+                st.error(f"Feature extraction failed for {strategy_name}. Skipping...")
                 continue
 
             input_tensor = torch.tensor(features, dtype=torch.float32).unsqueeze(0).to(device)
@@ -150,13 +150,13 @@ if uploaded_video:
         final_prediction = Counter(predictions).most_common(1)[0][0]
 
         st.markdown("---")
-        st.subheader("🏆 Final Ensemble Result")
+        st.subheader("Final Ensemble Result")
 
         if final_prediction == "REAL":
             st.markdown(
                 f"""
                 <div style='background-color: #d4edda; padding: 20px; border-radius: 10px;'>
-                    <h2 style='color: #155724; text-align: center;'>✅ FINAL RESULT: REAL</h2>
+                    <h2 style='color: #155724; text-align: center;'>FINAL RESULT: REAL</h2>
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -165,16 +165,14 @@ if uploaded_video:
             st.markdown(
                 f"""
                 <div style='background-color: #f8d7da; padding: 20px; border-radius: 10px;'>
-                    <h2 style='color: #721c24; text-align: center;'>🚨 FINAL RESULT: FAKE</h2>
+                    <h2 style='color: #721c24; text-align: center;'>FINAL RESULT: FAKE</h2>
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
-        st.balloons()
-
         st.markdown("---")
-        st.subheader("🔍 Individual Model Results")
+        st.subheader("Individual Model Results")
 
         for strategy_name, (pred, conf) in results.items():
             with st.container():
@@ -182,7 +180,7 @@ if uploaded_video:
                     st.markdown(
                         f"""
                         <div style='background-color: #d4edda; padding: 10px; border-radius: 8px; margin-bottom: 10px;'>
-                            <h5 style='color: #155724;'>{strategy_name} ➔ REAL ({conf*100:.2f}% confidence)</h5>
+                            <h5 style='color: #155724;'>{strategy_name} - REAL ({conf*100:.2f}% confidence)</h5>
                         </div>
                         """,
                         unsafe_allow_html=True
@@ -191,7 +189,7 @@ if uploaded_video:
                     st.markdown(
                         f"""
                         <div style='background-color: #f8d7da; padding: 10px; border-radius: 8px; margin-bottom: 10px;'>
-                            <h5 style='color: #721c24;'>{strategy_name} ➔ FAKE ({conf*100:.2f}% confidence)</h5>
+                            <h5 style='color: #721c24;'>{strategy_name} - FAKE ({conf*100:.2f}% confidence)</h5>
                         </div>
                         """,
                         unsafe_allow_html=True
@@ -199,4 +197,4 @@ if uploaded_video:
                 st.progress(conf)
 
     else:
-        st.error("❗ No predictions made. Check if faces are detected properly.")
+        st.error("No predictions made. Check if faces are detected properly.")
