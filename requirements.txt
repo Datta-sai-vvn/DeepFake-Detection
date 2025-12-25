@@ -6,3 +6,5 @@ opencv-python-headless
 mtcnn
 imageio
 av
+tensorflow
+
