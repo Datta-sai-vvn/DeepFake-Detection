@@ -125,7 +125,13 @@ uploaded_video = st.file_uploader("Upload a Video", type=["mp4", "avi"])
 
 if uploaded_video:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp_file:
-        tmp_file.write(uploaded_video.read())
+        # Read and write in chunks to avoid memory overflow with large files
+        chunk_size = 4 * 1024 * 1024 # 4MB chunks
+        while True:
+            chunk = uploaded_video.read(chunk_size)
+            if not chunk:
+                break
+            tmp_file.write(chunk)
         video_path = tmp_file.name
 
     st.video(uploaded_video)
