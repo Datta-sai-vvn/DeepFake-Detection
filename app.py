@@ -10,12 +10,18 @@ import cv2
 from pathlib import Path
 from collections import Counter
 import random
-from mtcnn import MTCNN
+from facenet_pytorch import MTCNN
 from torchvision import transforms
 import imageio.v3 as iio
 
 # --- Settings ---
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# --- Initialize Face Detector (Global) ---
+# keep_all=False ensures we mainly focus on the primary face if multiple are found,
+# or we can manually select. select_largest=False is default but we will handle selection.
+# Using a global instance prevents re-initialization on every frame/call.
+mtcnn_detector = MTCNN(keep_all=False, select_largest=True, device=device)
 
 # --- MLP Classifier Definition ---
 class MLPClassifier(nn.Module):
@@ -96,16 +102,34 @@ def extract_specific_frames(video_path, indices):
 
 # --- Face Detection ---
 def detect_faces(frames):
-    detector = MTCNN()
     faces = []
     for frame in frames:
-        detections = detector.detect_faces(frame)
-        if detections:
-            x, y, w, h = detections[0]['box']
-            x, y = max(0, x), max(0, y)
-            face = frame[y:y+h, x:x+w]
-            if face.size > 0:
-                faces.append(face)
+        # facenet-pytorch expects PIL or numpy. detect returns boxes, probs.
+        # frame is numpy RGB.
+        try:
+            boxes, _ = mtcnn_detector.detect(frame)
+        except Exception as e:
+            # Fallback or skip if detection fails internally
+            continue
+
+        if boxes is not None and len(boxes) > 0:
+            # Take the first face (highest probability/largest depending on config)
+            # facenet-pytorch boxes are [x1, y1, x2, y2]
+            box = boxes[0]
+            x1, y1, x2, y2 = map(int, box)
+            
+            # Clamp coordinates to frame dimensions
+            h_frame, w_frame = frame.shape[:2]
+            x1 = max(0, x1)
+            y1 = max(0, y1)
+            x2 = min(w_frame, x2)
+            y2 = min(h_frame, y2)
+            
+            # Extract face
+            if x2 > x1 and y2 > y1:
+                face = frame[y1:y2, x1:x2]
+                if face.size > 0:
+                    faces.append(face)
     return faces
 
 # --- Feature Extraction ---

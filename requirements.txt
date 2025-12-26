@@ -3,8 +3,6 @@ torch
 torchvision
 numpy
 opencv-python-headless
-mtcnn
+facenet-pytorch
 imageio
 av
-tensorflow
-
